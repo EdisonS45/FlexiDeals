@@ -27,7 +27,7 @@ export function getProducts(
     return cacheFn(userId, { limit })
   }
 
-export async function createProduct(data: typeof ProductTable.$inferInsert) {
+  export async function createProduct(data: typeof ProductTable.$inferInsert) {
     const [newProduct] = await db
       .insert(ProductTable)
       .values(data)
@@ -55,6 +55,26 @@ export async function createProduct(data: typeof ProductTable.$inferInsert) {
     return newProduct
   }
 
+export async function updateProduct(
+    data: Partial<typeof ProductTable.$inferInsert>,
+    { id, userId }: { id: string; userId: string }
+  ) {
+    const { rowCount } = await db
+      .update(ProductTable)
+      .set(data)
+      .where(and(eq(ProductTable.clerkUserId, userId), eq(ProductTable.id, id)))
+  
+    if (rowCount > 0) {
+      revalidateDbCache({
+        tag: CACHE_TAGS.products,
+        userId,
+        id,
+      })
+    }
+  
+    return rowCount > 0
+  }
+
 export async function deleteProduct({
     id,
     userId,
@@ -77,6 +97,14 @@ export async function deleteProduct({
     return rowCount > 0
   }
 
+export function getProduct({ id, userId }: { id: string; userId: string }) {
+    const cacheFn = dbCache(getProductInternal, {
+      tags: [getIdTag(id, CACHE_TAGS.products)],
+    })
+  
+    return cacheFn({ id, userId })
+  }
+
 function getProductsInternal(userId: string, { limit }: { limit?: number }) {
     return db.query.ProductTable.findMany({
       where: ({ clerkUserId }, { eq }) => eq(clerkUserId, userId),
@@ -84,3 +112,11 @@ function getProductsInternal(userId: string, { limit }: { limit?: number }) {
       limit,
     })
   }
+
+function getProductInternal({ id, userId }: { id: string; userId: string }) {
+    return db.query.ProductTable.findFirst({
+      where: ({ clerkUserId, id: idCol }, { eq, and }) =>
+        and(eq(clerkUserId, userId), eq(idCol, id)),
+    })
+  }
+  

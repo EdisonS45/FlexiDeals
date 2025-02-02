@@ -16,48 +16,37 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { productDetailsSchema } from "@/schemas/products"
-import { createProduct } from "@/server/actions/products"
+import { createProduct, updateProduct } from "@/server/actions/products"
 import { useToast } from "@/hooks/use-toast"
 
 //written by Me - but not in github
 
-export function ProductDetailsForm(){
-    const { toast } = useToast()
-    const form = useForm<z.infer<typeof productDetailsSchema>>({
-        resolver: zodResolver(productDetailsSchema),
-        defaultValues:{
-            name: "",
-            url: "",
-            description: "",
-        }
-    })
-//commented entirely by me
-//   product,
-// }: {
-//   product?: {
-//     id: string
-//     name: string
-//     description: string | null
-//     url: string
-//   }
-// }) {
-//   const { toast } = useToast()
-//   const form = useForm<z.infer<typeof productDetailsSchema>>({
-//     resolver: zodResolver(productDetailsSchema),
-//     defaultValues: product
-//       ? { ...product, description: product.description ?? "" }
-//       : {
-//           name: "",
-//           url: "",
-//           description: "",
-//         },
-//   })
+export function ProductDetailsForm({
+  product,
+}: {
+  product?: {
+    id: string
+    name: string
+    description: string | null
+    url: string
+  }
+}) {
+  const { toast } = useToast()
+  const form = useForm<z.infer<typeof productDetailsSchema>>({
+    resolver: zodResolver(productDetailsSchema),
+    defaultValues: product
+      ? { ...product, description: product.description ?? "" }
+      : {
+          name: "",
+          url: "",
+          description: "",
+        },
+  })
 
   async function onSubmit(values: z.infer<typeof productDetailsSchema>) {
 
-    //commented entirely by me
-    // const action =
-    //   product == null ? createProduct : updateProduct.bind(null, product.id)
+    const action =
+    product == null ? createProduct : updateProduct.bind(null, product.id)
     const data = await createProduct(values)
 
     if (data?.message) {
