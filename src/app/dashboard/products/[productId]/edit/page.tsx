@@ -1,4 +1,4 @@
-// import { CountryDiscountsForm } from "@/app/dashboard/_components/forms/CountryDiscountsForm"
+import { CountryDiscountsForm } from "@/app/dashboard/_components/forms/CountryDiscountsForm"
 // import { ProductCustomizationForm } from "@/app/dashboard/_components/forms/ProductCustomizationForm"
 import { ProductDetailsForm } from "@/app/dashboard/_components/forms/ProductDetailsForm"
 import { PageWithBackButton } from "@/app/dashboard/_components/PageWithBackButton"
@@ -13,7 +13,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { clearFullCache } from "@/lib/cache"
 import {
   getProduct,
-  // getProductCountryGroups,
+  getProductCountryGroups,
   // getProductCustomization,
 } from "@/server/db/products"
 // import { canCustomizeBanner, canRemoveBranding } from "@/server/permissions"
@@ -87,10 +87,10 @@ async function CountryTab({
   productId: string
   userId: string
 }) {
-  // const countryGroups = await getProductCountryGroups({
-  //   productId,
-  //   userId,
-  // })
+  const countryGroups = await getProductCountryGroups({
+    productId,
+    userId,
+  })
 
   return (
     <Card>
@@ -102,10 +102,10 @@ async function CountryTab({
         </CardDescription>
       </CardHeader>
       <CardContent>
-        {/* <CountryDiscountsForm
+        <CountryDiscountsForm
           productId={productId}
           countryGroups={countryGroups}
-        /> */}
+        />
       </CardContent>
     </Card>
   )

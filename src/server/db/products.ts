@@ -16,6 +16,25 @@ import { removeTrailingSlash } from "@/lib/utils"
 import { and, count, eq, inArray, sql } from "drizzle-orm"
 import { BatchItem } from "drizzle-orm/batch"
 
+
+export function getProductCountryGroups({
+  productId,
+  userId,
+}: {
+  productId: string
+  userId: string
+}) {
+  const cacheFn = dbCache(getProductCountryGroupsInternal, {
+    tags: [
+      getIdTag(productId, CACHE_TAGS.products),
+      getGlobalTag(CACHE_TAGS.countries),
+      getGlobalTag(CACHE_TAGS.countryGroups),
+    ],
+  })
+
+  return cacheFn({ productId, userId })
+}
+
 export function getProducts(
     userId: string,
     { limit }: { limit?: number } = {}
@@ -120,3 +139,42 @@ function getProductInternal({ id, userId }: { id: string; userId: string }) {
     })
   }
   
+  async function getProductCountryGroupsInternal({
+    userId,
+    productId,
+  }: {
+    userId: string
+    productId: string
+  }) {
+    const product = await getProduct({ id: productId, userId })
+    if (product == null) return []
+  
+    const data = await db.query.CountryGroupTable.findMany({
+      with: {
+        countries: {
+          columns: {
+            name: true,
+            code: true,
+          },
+        },
+        countryGroupDiscounts: {
+          columns: {
+            coupon: true,
+            discountPercentage: true,
+          },
+          where: ({ productId: id }, { eq }) => eq(id, productId),
+          limit: 1,
+        },
+      },
+    })
+  
+    return data.map(group => {
+      return {
+        id: group.id,
+        name: group.name,
+        recommendedDiscountPercentage: group.recommendedDiscountPercentage,
+        countries: group.countries,
+        discount: group.countryGroupDiscounts.at(0),
+      }
+    })
+  }
