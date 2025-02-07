@@ -15,16 +15,18 @@ import {
   updateProductCustomization as updateProductCustomizationDb,
 } from "@/server/db/products"
 import { redirect } from "next/navigation"
-import { canCreateProduct, canCustomizeBanner } from "../permissions"
+import { canCustomizeBanner } from "../permissions"
+// import { canCreateProduct, canCustomizeBanner } from "../permissions"
+
 
 export async function createProduct(
   unsafeData: z.infer<typeof productDetailsSchema>
 ): Promise<{ error: boolean; message: string } | undefined> {
   const { userId } =await auth()
   const { success, data } = productDetailsSchema.safeParse(unsafeData)
-  const canCreate = await canCreateProduct(userId)
+  // const canCreate = await canCreateProduct(userId)
 
-  if (!success || userId == null || !canCreate) {
+  if (!success || userId == null ) {
     return { error: true, message: "There was an error creating your product" }
   }
 
@@ -109,7 +111,7 @@ export async function updateCountryDiscounts(
     }
   })
 
-  await updateCountryDiscountsDb(deleteIds, insert, { productId: id, userId })
+await updateCountryDiscountsDb(deleteIds, insert, { productId: id, userId })
 
   return { error: false, message: "Country discounts saved" }
 }
@@ -120,7 +122,7 @@ export async function updateProductCustomization(
 ) {
   const { userId } = await auth()
   const { success, data } = productCustomizationSchema.safeParse(unsafeData)
-  const canCustomize = await canCustomizeBanner(userId)
+  const canCustomize = await canCustomizeBanner(userId) || true
 
   if (!success || userId == null || !canCustomize) {
     return {

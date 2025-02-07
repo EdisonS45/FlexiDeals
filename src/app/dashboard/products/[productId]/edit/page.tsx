@@ -1,5 +1,5 @@
 import { CountryDiscountsForm } from "@/app/dashboard/_components/forms/CountryDiscountsForm"
-// import { ProductCustomizationForm } from "@/app/dashboard/_components/forms/ProductCustomizationForm"
+import { ProductCustomizationForm } from "@/app/dashboard/_components/forms/ProductCustomizationForm"
 import { ProductDetailsForm } from "@/app/dashboard/_components/forms/ProductDetailsForm"
 import { PageWithBackButton } from "@/app/dashboard/_components/PageWithBackButton"
 import {
@@ -9,35 +9,33 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import {Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { clearFullCache } from "@/lib/cache"
 import {
   getProduct,
   getProductCountryGroups,
-  // getProductCustomization,
+  getProductCustomization,
 } from "@/server/db/products"
-// import { canCustomizeBanner, canRemoveBranding } from "@/server/permissions"
+import { canCustomizeBanner, canRemoveBranding } from "@/server/permissions"
 import { auth } from "@clerk/nextjs/server"
 import { notFound } from "next/navigation"
 
-export default async function EditProductPage({
-  params: { productId },
-  searchParams: { tab = "details" },
-}: {
-  params: { productId: string }
-  searchParams: { tab?: string }
+export default async function EditProductPage(props: {
+  params: { productId: string };
+  searchParams?: { tab?: string };
 }) {
-  const { userId, redirectToSignIn } =await auth()
-  if (userId == null) return redirectToSignIn()
+  const { params, searchParams } = props;
+  const { productId } = await params; // Await `params`
+  const tab = (await searchParams)?.tab || "details"; // Await `searchParams`
 
-  const product = await getProduct({ id: productId, userId })
-  if (product == null) return notFound()
+  const { userId, redirectToSignIn } = await auth();
+  if (!userId) return redirectToSignIn();
+
+  const product = await getProduct({ id: productId, userId });
+  if (!product) return notFound();
 
   return (
-    <PageWithBackButton
-      backButtonHref="/dashboard/products"
-      pageTitle="Edit Product"
-    >
+    <PageWithBackButton backButtonHref="/dashboard/products" pageTitle="Edit Product">
       <Tabs defaultValue={tab}>
         <TabsList className="bg-background/60">
           <TabsTrigger value="details">Details</TabsTrigger>
@@ -51,12 +49,13 @@ export default async function EditProductPage({
           <CountryTab productId={productId} userId={userId} />
         </TabsContent>
         <TabsContent value="customization">
-          {/* <CustomizationsTab productId={productId} userId={userId} /> */}
+          <CustomizationsTab productId={productId} userId={userId} />
         </TabsContent>
       </Tabs>
     </PageWithBackButton>
-  )
+  );
 }
+
 
 function DetailsTab({
   product,
@@ -118,22 +117,22 @@ async function CustomizationsTab({
   productId: string
   userId: string
 }) {
-  // const customization = await getProductCustomization({ productId, userId })
+  const customization = await getProductCustomization({ productId, userId })
 
-  // if (customization == null) return notFound()
+  if (customization == null) return notFound()
 
-  // return (
-  //   <Card>
-  //     <CardHeader>
-  //       <CardTitle className="text-xl">Banner Customization</CardTitle>
-  //     </CardHeader>
-  //     <CardContent>
-  //       <ProductCustomizationForm
-  //         canRemoveBranding={await canRemoveBranding(userId)}
-  //         canCustomizeBanner={await canCustomizeBanner(userId)}
-  //         customization={customization}
-  //       />
-  //     </CardContent>
-  //   </Card>
-  // )
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-xl">Banner Customization</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <ProductCustomizationForm 
+          canRemoveBranding={await canRemoveBranding(userId)}
+          canCustomizeBanner={await canCustomizeBanner(userId) || true}
+          customization={customization}
+        />
+      </CardContent>
+    </Card>
+  )
 }

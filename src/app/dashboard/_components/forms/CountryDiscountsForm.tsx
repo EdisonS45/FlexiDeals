@@ -17,7 +17,7 @@ import Image from "next/image"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { useToast } from "@/hooks/use-toast"
-// import { updateCountryDiscounts } from "@/server/actions/products"
+import { updateCountryDiscounts } from "@/server/actions/products"
 
 export function CountryDiscountsForm({
   productId,
@@ -56,7 +56,7 @@ export function CountryDiscountsForm({
     },
   })
 
-  async function onSubmit(
+async function onSubmit(
     values: z.infer<typeof productCountryDiscountsSchema>
   ) {
     const data = await updateCountryDiscounts(productId, values)
