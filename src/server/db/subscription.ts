@@ -62,7 +62,8 @@ export async function updateUserSubscription(
 export async function getUserSubscriptionTier(userId: string) {
   const subscription = await getUserSubscription(userId)
 
-  if (subscription == null) throw new Error("User has no subscription")
+  if (subscription == null) return subscriptionTiers.Free // or any default tier
+
 
   return subscriptionTiers[subscription.tier]
 }
