@@ -56,10 +56,10 @@ export default function HomePage(){
             <Link href="https://neon.tech">
               <NeonIcon />
             </Link>
-            <Link href="https://clerk.com">
+            {/* <Link href="https://clerk.com">
               <ClerkIcon />
-            </Link>
-            <Link href="https://neon.tech">
+            </Link> */}
+            {/* <Link href="https://neon.tech">
               <NeonIcon />
             </Link>
             <Link href="https://clerk.com">
@@ -70,7 +70,7 @@ export default function HomePage(){
             </Link>
             <Link className="md:max-xl:hidden" href="https://clerk.com">
               <ClerkIcon />
-            </Link>
+            </Link> */}
           </div>
         </div>
       </section>
@@ -101,7 +101,7 @@ export default function HomePage(){
               title="Solutions"
               links={[
                 { label: "Newsletter", href: "#" },
-                { label: "SaaS Business", href: "#" },
+                { label: "Digital Products", href: "#" },
                 { label: "Online Courses", href: "#" },
               ]}
             />
@@ -119,14 +119,14 @@ export default function HomePage(){
                 { label: "Stripe App", href: "#" },
               ]}
             />
-            <FooterLinkGroup
+            {/* <FooterLinkGroup
               title="Company"
               links={[
                 { label: "Affiliate", href: "#" },
                 { label: "Twitter", href: "#" },
                 { label: "Terms of Service", href: "#" },
               ]}
-            />
+            /> */}
           </div>
           <div className="flex flex-col gap-8">
             <FooterLinkGroup
@@ -139,7 +139,7 @@ export default function HomePage(){
                 { label: "Paddle", href: "#" },
               ]}
             />
-            <FooterLinkGroup
+            {/* <FooterLinkGroup
               title="Tutorials"
               links={[
                 { label: "Any Website", href: "#" },
@@ -149,7 +149,7 @@ export default function HomePage(){
                 { label: "Chargebee", href: "#" },
                 { label: "Paddle", href: "#" },
               ]}
-            />
+            /> */}
           </div>
         </div>
       </footer>
@@ -206,7 +206,7 @@ function PricingCard({
         </Feature>
         <Feature>PPP discounts</Feature>
         {canAccessAnalytics && <Feature>Advanced analytics</Feature>}
-        {canRemoveBranding && <Feature>Remove Easy PPP branding</Feature>}
+        {canRemoveBranding && <Feature>Remove FlexiDeals branding</Feature>}
         {canCustomizeBanner && <Feature>Banner customization</Feature>}
       </CardFooter>
     </Card>

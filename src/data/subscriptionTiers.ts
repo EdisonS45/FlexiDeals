@@ -1,4 +1,4 @@
-// import { env } from "./env/server"
+import { env } from "./env/server"
 
 export type TierNames = keyof typeof subscriptionTiers
 export type PaidTierNames = Exclude<TierNames, "Free">
@@ -16,17 +16,17 @@ export const subscriptionTiers = {
   },
   Basic: {
     name: "Basic",
-    priceInCents: 1900,
+    priceInCents: 949,
     maxNumberOfProducts: 5,
     maxNumberOfVisits: 10000,
     canAccessAnalytics: true,
     canCustomizeBanner: false,
-    canRemoveBranding: true,
+    canRemoveBranding: false,
     // stripePriceId: env.STRIPE_BASIC_PLAN_STRIPE_PRICE_ID,
   },
   Standard: {
     name: "Standard",
-    priceInCents: 4900,
+    priceInCents: 2900,
     maxNumberOfProducts: 30,
     maxNumberOfVisits: 100000,
     canAccessAnalytics: true,
@@ -36,7 +36,7 @@ export const subscriptionTiers = {
   },
   Premium: {
     name: "Premium",
-    priceInCents: 9900,
+    priceInCents: 4900,
     maxNumberOfProducts: 50,
     maxNumberOfVisits: 1000000,
     canAccessAnalytics: true,
