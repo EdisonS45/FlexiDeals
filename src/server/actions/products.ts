@@ -15,8 +15,7 @@ import {
   updateProductCustomization as updateProductCustomizationDb,
 } from "@/server/db/products"
 import { redirect } from "next/navigation"
-import { canCustomizeBanner } from "../permissions"
-// import { canCreateProduct, canCustomizeBanner } from "../permissions"
+import { canCreateProduct, canCustomizeBanner } from "../permissions"
 
 
 export async function createProduct(
@@ -24,7 +23,7 @@ export async function createProduct(
 ): Promise<{ error: boolean; message: string } | undefined> {
   const { userId } =await auth()
   const { success, data } = productDetailsSchema.safeParse(unsafeData)
-  // const canCreate = await canCreateProduct(userId)
+  const canCreate = await canCreateProduct(userId)
 
   if (!success || userId == null ) {
     return { error: true, message: "There was an error creating your product" }
@@ -122,7 +121,7 @@ export async function updateProductCustomization(
 ) {
   const { userId } = await auth()
   const { success, data } = productCustomizationSchema.safeParse(unsafeData)
-  const canCustomize = await canCustomizeBanner(userId) || true
+  const canCustomize = await canCustomizeBanner(userId) 
 
   if (!success || userId == null || !canCustomize) {
     return {

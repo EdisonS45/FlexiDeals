@@ -63,7 +63,10 @@ export async function getUserSubscriptionTier(userId: string) {
   const subscription = await getUserSubscription(userId)
 
   if (subscription == null) return subscriptionTiers.Free // or any default tier
+<<<<<<< HEAD
 
+=======
+>>>>>>> f987f32 (added before payment)
 
   return subscriptionTiers[subscription.tier]
 }
